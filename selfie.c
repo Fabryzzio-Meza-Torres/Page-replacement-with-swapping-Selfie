@@ -13346,7 +13346,7 @@ uint64_t handle_page_fault(uint64_t *context)
   {
     victim_context = 0;
     victim_page = 0;
-    victim_frame = get_lru_victim_frame((uint64_t *)&victim_context, &victim_page);
+    victim_frame = get_lru_victim_frame((uint64_t *)victim_context, (uint64_t*)victim_page);
     
     if (victim_frame == 0)
     {
@@ -13604,8 +13604,6 @@ void map_unmapped_pages(uint64_t *context)
 {
   uint64_t page;
 
-  // assert: page table is only mapped from beginning up and end down
-
   page = get_lowest_lo_page(context);
 
   while (is_page_mapped(get_pt(context), page))
@@ -13618,7 +13616,6 @@ void map_unmapped_pages(uint64_t *context)
     page = page + 1;
   }
 
-  // allowing more palloc for caching tree page tables
   PHYSICALMEMORYEXCESS = PHYSICALMEMORYEXCESS + 1;
 }
 
